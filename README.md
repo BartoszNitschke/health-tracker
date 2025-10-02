@@ -21,6 +21,14 @@ Health Tracker to nowoczesna aplikacja webowa, która przekształca zarządzanie
 - 📈 **Wizualizacje** - Kolorowe wykresy i animowane elementy UI
 - 🔧 **Tooltips i popupy** - Interaktywne podpowiedzi i dodatkowe informacje
 
+
+## 📸 Demo Aplikacji
+
+
+https://github.com/user-attachments/assets/cc9aa2e7-c019-472f-b58b-3e29f5019d50
+
+
+
 ## 🛠️ Technologie
 
 ### Frontend Framework:
@@ -182,12 +190,6 @@ ng test
 # Linting kodu
 ng lint
 ```
-
-## 📸 Demo Aplikacji
-
-<!-- Miejsce na GIF/filmik demonstracyjny -->
-
-_[Filmik demonstracyjny będzie dodany wkrótce]_
 
 ## 💡 Najciekawsze Rozwiązania Techniczne
 
