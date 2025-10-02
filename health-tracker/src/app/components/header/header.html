@@ -1,0 +1,30 @@
+<!-- Progress Bars -->
+<div class="w-full">
+  <div class="flex gap-4 ml-6">
+    <div
+      *ngFor="let attr of userData.attributesWithDynamicProgress(); trackBy: trackByAttr"
+      class="flex-1"
+    >
+      <!-- Progress Bar in Quest Style with Smooth Animation -->
+      <div class="bg-white rounded-full p-3 relative overflow-hidden shadow-lg">
+        <div
+          class="absolute top-0 left-0 bottom-0 rounded-l-full"
+          [style.background-color]="attr.color"
+          [style.width.%]="attr.progress"
+          style="transition: width 0.5s ease-in-out; will-change: width"
+        ></div>
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="text-lg">{{ attr.emoji }}</div>
+            <span class="font-poppins text-sm font-medium text-white">{{ attr.name }}</span>
+          </div>
+          <span
+            class="font-poppins text-xs font-medium"
+            [ngClass]="attr.progress >= 100 ? 'text-white' : 'text-gray-900'"
+            >{{ attr.progress }}%</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

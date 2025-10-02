@@ -1,0 +1,582 @@
+<!-- Main Dashboard Container - Full Height -->
+<div class="h-full flex flex-col px-8">
+  <!-- Header Section -->
+  <div class="pt-6 mb-6 flex-shrink-0">
+    <app-header></app-header>
+  </div>
+
+  <!-- Content Sections -->
+  <div class="flex gap-8 flex-1">
+    <!-- Left Section - Screen (65%) -->
+    <div class="w-[75%] bg-isabelline rounded-3 flex flex-col p-6">
+      <!-- Top Section - Body Overview & My Daily Target (55%) -->
+      <div class="h-[55%] mb-6">
+        <div class="flex gap-6 h-full">
+          <!-- Body Overview Section (50%) -->
+          <div class="flex-1 flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="font-fredoka text-2xl text-night">Podsumowanie</h2>
+            </div>
+
+            <!-- Main Progress Card -->
+            <div
+              class="bg-night rounded-4xl p-6 text-white flex-1 flex flex-col justify-center gap-16"
+            >
+              <!-- Top Text -->
+              <div class="text-center">
+                <p class="text-4xl mb-1">
+                  Witaj ponownie,
+                  <span class="font-semibold text-lime">{{ userData.profile().fullName }}</span>
+                </p>
+              </div>
+
+              <!-- Bottom - Progress Circles -->
+              <div class="flex justify-center gap-8">
+                <!-- Level Progress -->
+                <div class="text-center">
+                  <div
+                    class="w-48 h-48 flex items-center justify-center mb-2 relative cursor-pointer"
+                    [appTooltip]="getLevelTooltip()"
+                    tooltipPosition="top"
+                  >
+                    <svg class="w-48 h-48 transform -rotate-90" viewBox="0 0 64 64">
+                      <!-- Background circle -->
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="#374151"
+                        stroke-width="6"
+                        fill="none"
+                      />
+                      <!-- Progress circle -->
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="#CAF547"
+                        stroke-width="6"
+                        fill="none"
+                        stroke-dasharray="175.929"
+                        [attr.stroke-dashoffset]="levelProgressStrokeDashoffset"
+                        stroke-linecap="round"
+                        style="transition: stroke-dashoffset 0.5s ease-in-out"
+                      />
+                    </svg>
+                    <span class="absolute text-4xl font-bold">{{ userData.summary().level }}</span>
+                  </div>
+                  <p class="text-sm">Poziom</p>
+                </div>
+
+                <!-- Daily Quests -->
+                <div class="text-center">
+                  <div class="w-48 h-48 flex items-center justify-center mb-2 relative">
+                    <svg class="w-48 h-48 transform -rotate-90" viewBox="0 0 64 64">
+                      <!-- Background circle -->
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="#374151"
+                        stroke-width="6"
+                        fill="none"
+                      />
+                      <!-- Progress circle -->
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="#fbbf24"
+                        stroke-width="6"
+                        fill="none"
+                        stroke-dasharray="175.929"
+                        [attr.stroke-dashoffset]="dailyQuestsStrokeDashoffset"
+                        stroke-linecap="round"
+                        style="transition: stroke-dashoffset 0.5s ease-in-out"
+                      />
+                    </svg>
+                    <span class="absolute text-4xl font-bold"
+                      >{{ userData.dailyQuestsCompletedIncludingMain() }}/{{
+                        userData.dailyQuestsTotalIncludingMain()
+                      }}</span
+                    >
+                  </div>
+                  <p class="text-sm">Dzienne questy</p>
+                </div>
+
+                <!-- Weekly Quests -->
+                <div class="text-center">
+                  <div class="w-48 h-48 flex items-center justify-center mb-2 relative">
+                    <svg class="w-48 h-48 transform -rotate-90" viewBox="0 0 64 64">
+                      <!-- Background circle -->
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="#374151"
+                        stroke-width="6"
+                        fill="none"
+                      />
+                      <!-- Progress circle -->
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="#f87171"
+                        stroke-width="6"
+                        fill="none"
+                        stroke-dasharray="175.929"
+                        [attr.stroke-dashoffset]="weeklyQuestsStrokeDashoffset"
+                        stroke-linecap="round"
+                        style="transition: stroke-dashoffset 0.5s ease-in-out"
+                      />
+                    </svg>
+                    <span class="absolute text-4xl font-bold"
+                      >{{ userData.summary().weeklyCompleted }}/{{
+                        userData.summary().weeklyTotal
+                      }}</span
+                    >
+                  </div>
+                  <p class="text-sm">Tygodniowe questy</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- My Daily Target Section (50%) -->
+          <div class="flex-1 flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-fredoka text-2xl text-night">Moje dzienne cele</h3>
+              <button
+                (click)="openCustomizeTargetsPopup()"
+                class="font-poppins text-sm text-gray-600 cursor-pointer hover:text-gray-900 transition-colors duration-300"
+              >
+                Dostosuj
+              </button>
+            </div>
+
+            <!-- Dynamic Stats Grid -->
+            <div class="flex flex-col gap-4 flex-1">
+              <!-- Dynamic grid that adjusts based on number of targets -->
+              <div
+                class="grid gap-4 flex-1"
+                [class.grid-cols-1]="getVisibleTargets().length === 1"
+                [class.grid-cols-2]="
+                  getVisibleTargets().length === 2 || getVisibleTargets().length === 4
+                "
+                [class.grid-cols-3]="getVisibleTargets().length === 3"
+                [class.grid-rows-1]="getVisibleTargets().length <= 2"
+                [class.grid-rows-2]="getVisibleTargets().length > 2"
+              >
+                <div
+                  *ngFor="let target of getVisibleTargets(); let i = index"
+                  class="bg-white rounded-4xl p-6 flex flex-col justify-between"
+                >
+                  <div class="flex justify-between items-center gap-2 mb-2">
+                    <span class="font-poppins text-3xl font-semibold text-gray-900">
+                      {{ target.label }}
+                    </span>
+                    <div class="icon-xl flex items-center justify-center">
+                      <mat-icon style="color: #111827">{{ getTargetIcon(target) }}</mat-icon>
+                    </div>
+                  </div>
+                  <div class="flex items-center w-full justify-between gap-2">
+                    <div>
+                      <p class="text-2xl text-gray-700 font-bold">
+                        {{ target.current }}/{{ target.goal }}
+                      </p>
+                      <p class="font-semibold text-gray-700 text-lg">
+                        {{ target.unit }}
+                      </p>
+                    </div>
+                    <div class="flex gap-2">
+                      <div *ngIf="target.current >= target.goal" class="bg-lime rounded-full p-3">
+                        <mat-icon style="color: #0e1312; font-size: 24px">check</mat-icon>
+                      </div>
+                      <div
+                        (click)="openTargetPopupByType(target.type)"
+                        class="rounded-full p-3 cursor-pointer hover:bg-gray-200 hover:text-black/50 transition-colors duration-200"
+                      >
+                        <mat-icon style="color: black; font-size: 24px">add</mat-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Activity Section (45%) -->
+      <div class="h-[45%] flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-fredoka text-2xl text-night">Akcje</h2>
+          <div class="flex gap-2">
+            <button
+              (click)="scrollPrev()"
+              class="w-10 h-10 bg-lime rounded-full flex items-center justify-center cursor-pointer hover:bg-lime/80 transition-colors duration-200"
+            >
+              <mat-icon style="color: #0e1312; font-size: 20px">arrow_back</mat-icon>
+            </button>
+            <button
+              (click)="scrollNext()"
+              class="w-10 h-10 bg-lime rounded-full flex items-center justify-center cursor-pointer hover:bg-lime/80 transition-colors duration-200"
+            >
+              <mat-icon style="color: #0e1312; font-size: 20px">arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Carousel Wrapper with peek -->
+        <div class="flex-1 relative">
+          <div class="embla overflow-hidden h-full" #emblaViewport>
+            <div class="embla__container flex h-full">
+              <!-- Drinking Tracker Card -->
+              <div class="embla__slide bg-lime rounded-4xl relative overflow-hidden h-full flex">
+                <!-- Left side - Text content (35%) -->
+                <div class="w-[35%] p-8 flex flex-col justify-between relative z-10">
+                  <div>
+                    <h3 class="font-poppins text-4xl text-gray-900 font-semibold mb-4">
+                      Napij się wody
+                    </h3>
+                    <p class="font-poppins text-lg text-gray-600 mb-4">
+                      Uzupełnij swój pasek nawodnienia
+                    </p>
+                  </div>
+                  <div
+                    (click)="openWaterPopup()"
+                    class="bg-isabelline rounded-full w-16 h-16 flex items-center justify-center cursor-pointer hover:bg-white hover:scale-110 transition-all duration-300"
+                  >
+                    <mat-icon style="color: black; font-size: 24px">arrow_forward</mat-icon>
+                  </div>
+                </div>
+                <!-- Right side - Image (65%) -->
+                <div class="w-[65%] relative">
+                  <img
+                    src="/activities/drinking-water.webp"
+                    alt="Woman drinking water"
+                    class="absolute inset-0 w-full h-full object-cover object-left-top"
+                  />
+                </div>
+              </div>
+
+              <!-- Daily Exercise Card -->
+              <div class="embla__slide bg-white rounded-4xl relative overflow-hidden h-full flex">
+                <!-- Left side - Text content (38%) -->
+                <div class="w-[38%] p-8 flex flex-col justify-between relative z-10">
+                  <div>
+                    <h3 class="font-poppins text-4xl text-gray-900 font-semibold mb-4">Trening</h3>
+                    <p class="font-poppins text-lg text-gray-600 mb-4">
+                      Trenuj siłę i zwinność swojej postaci
+                    </p>
+                  </div>
+                  <div
+                    (click)="popupService.openExerciseSetup()"
+                    class="bg-lime text-night rounded-full w-16 h-16 flex items-center justify-center cursor-pointer hover:bg-white hover:scale-110 transition-all duration-300"
+                  >
+                    <mat-icon style="color: #0e1312; font-size: 24px">arrow_forward</mat-icon>
+                  </div>
+                </div>
+                <!-- Right side - Image (62%) -->
+                <div class="w-[62%] relative">
+                  <img
+                    src="/activities/exercising.webp"
+                    alt="Person exercising"
+                    class="absolute inset-0 w-full h-full object-cover object-left-top"
+                  />
+                </div>
+              </div>
+
+              <!-- Sleep Tracker Card -->
+              <div class="embla__slide bg-night rounded-4xl relative overflow-hidden h-full flex">
+                <!-- Left side - Text content (38%) -->
+                <div class="w-[38%] p-8 flex flex-col justify-between relative z-10">
+                  <div>
+                    <h3 class="font-poppins text-4xl text-white font-semibold mb-4">
+                      Prześpij się
+                    </h3>
+                    <p class="font-poppins text-lg text-gray-300 mb-4">
+                      Doładuj energię i zajmij się innymi aktywnościami
+                    </p>
+                  </div>
+                  <div
+                    (click)="popupService.openSleepLog()"
+                    class="bg-lime text-night rounded-full w-16 h-16 flex items-center justify-center cursor-pointer hover:bg-white hover:scale-110 transition-all duration-300"
+                  >
+                    <mat-icon style="color: #0e1312; font-size: 24px">arrow_forward</mat-icon>
+                  </div>
+                </div>
+                <!-- Right side - Image (62%) -->
+                <div class="w-[62%] relative">
+                  <img
+                    src="/activities/sleeping.webp"
+                    alt="Person sleeping"
+                    class="absolute inset-0 w-full h-full object-cover object-left-top"
+                  />
+                </div>
+              </div>
+
+              <!-- Fourth Card - Meditation -->
+              <div class="embla__slide bg-lime rounded-4xl relative overflow-hidden h-full flex">
+                <!-- Left side - Text content (38%) -->
+                <div class="w-[38%] p-8 flex flex-col justify-between relative z-10">
+                  <div>
+                    <h3 class="font-poppins text-4xl text-night font-semibold mb-4">Medytuj</h3>
+                    <p class="font-poppins text-lg text-night mb-4">
+                      Odzyskaj energię i doładuj pasek luzu
+                    </p>
+                  </div>
+                  <div
+                    (click)="popupService.openMeditationSetup()"
+                    class="bg-isabelline text-night rounded-full w-16 h-16 flex items-center justify-center cursor-pointer hover:bg-white hover:scale-110 transition-all duration-300"
+                  >
+                    <mat-icon style="color: #0e1312; font-size: 24px">arrow_forward</mat-icon>
+                  </div>
+                </div>
+                <!-- Right side - Image (62%) -->
+                <div class="w-[62%] relative">
+                  <img
+                    src="/activities/meditating.webp"
+                    alt="Person meditating"
+                    class="absolute inset-0 w-full h-full object-cover object-left-top"
+                  />
+                </div>
+              </div>
+
+              <!-- Fifth Card - Eating -->
+              <div class="embla__slide bg-white rounded-4xl relative overflow-hidden h-full flex">
+                <!-- Left side - Text content (38%) -->
+                <div class="w-[38%] p-8 flex flex-col justify-between relative z-10">
+                  <div>
+                    <h3 class="font-poppins text-4xl text-gray-900 font-semibold mb-4">
+                      Zjedz coś
+                    </h3>
+                    <p class="font-poppins text-lg text-gray-600 mb-4">
+                      Zadbaj o zbalansowaną dietę i napełnij pasek głodu
+                    </p>
+                  </div>
+                  <div
+                    (click)="popupService.openEatingLog()"
+                    class="bg-lime text-night rounded-full w-16 h-16 flex items-center justify-center cursor-pointer hover:bg-white hover:scale-110 transition-all duration-300"
+                  >
+                    <mat-icon style="color: #0e1312; font-size: 24px">arrow_forward</mat-icon>
+                  </div>
+                </div>
+                <!-- Right side - Image (62%) -->
+                <div class="w-[62%] relative">
+                  <img
+                    src="/activities/eating.webp"
+                    alt="Person eating healthy food"
+                    class="absolute inset-0 w-full h-full object-cover object-left-top"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section - Side Panel (25%) -->
+    <div class="w-[25%] bg-white rounded-4xl p-6 h-full flex flex-col">
+      <!-- Quests Section -->
+      <div class="flex flex-col">
+        <div class="flex items-center mb-6">
+          <h2 class="font-fredoka text-2xl text-night">Questy</h2>
+          <button class="p-2 hover:bg-gray-100 transition-colors cursor-pointer rounded-full ml-1">
+            <mat-icon
+              class="text-gray-600 hover:text-night transition-colors"
+              style="font-size: 20px"
+              >arrow_forward</mat-icon
+            >
+          </button>
+        </div>
+
+        <!-- Opcja B: Split Design -->
+        <div class="bg-white rounded-2xl mb-4 overflow-hidden border-2 border-lime shadow-md">
+          <div class="bg-lime p-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-night rounded-full flex items-center justify-center">
+                  <mat-icon style="color: #a3e635; font-size: 12px">emoji_events</mat-icon>
+                </div>
+                <span class="font-poppins text-sm text-night font-bold uppercase"
+                  >Quest Główny</span
+                >
+              </div>
+              <span class="font-poppins text-lg font-bold text-night"
+                >+{{ userData.mainQuest().rewardXp }} XP</span
+              >
+            </div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-poppins text-xl font-bold text-night mb-3">
+              {{ userData.mainQuest().title }}
+            </h3>
+            <div class="w-full bg-gray-100 rounded-full h-3 mb-2">
+              <div
+                class="bg-lime h-3 rounded-full transition-all duration-500"
+                [style.width.%]="mainQuestProgressPercentage"
+              ></div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600"
+                >{{ userData.mainQuest().progressCurrent }}/{{
+                  userData.mainQuest().progressGoal
+                }}
+                ukończone</span
+              >
+              <span class="text-sm text-gray-600 font-medium"
+                >{{ mainQuestProgressPercentage }}%</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Quests -->
+        <div class="flex flex-col gap-3">
+          <h3 class="font-poppins text-sm font-semibold text-gray-700 mb-1">Dzienne questy</h3>
+
+          <!-- Quest 1 - Training (Dynamic) -->
+          <div
+            class="rounded-xl p-3 relative overflow-hidden transition-colors duration-500"
+            [ngClass]="trainingQuestProgressPercentage >= 100 ? 'bg-lime' : 'bg-gray-100'"
+          >
+            <div
+              class="absolute inset-0 bg-lime rounded-xl"
+              [style.width.%]="trainingQuestProgressPercentage"
+              style="transition: width 0.5s ease-in-out"
+            ></div>
+            <div class="relative flex items-center justify-between">
+              <h4
+                class="font-poppins text-sm font-medium transition-colors duration-500"
+                [ngClass]="trainingQuestProgressPercentage >= 100 ? 'text-night' : 'text-gray-900'"
+              >
+                Trenuj 30 minut
+              </h4>
+              <span
+                class="font-poppins text-xs font-medium transition-colors duration-500"
+                [ngClass]="trainingQuestProgressPercentage >= 100 ? 'text-night' : 'text-gray-500'"
+                >+25 XP</span
+              >
+            </div>
+          </div>
+
+          <!-- Quest 2 - Steps (Dynamic) -->
+          <div
+            class="rounded-xl p-3 relative overflow-hidden transition-colors duration-500"
+            [ngClass]="stepsQuestProgressPercentage >= 100 ? 'bg-lime' : 'bg-gray-100'"
+          >
+            <div
+              class="absolute inset-0 bg-lime rounded-xl"
+              [style.width.%]="stepsQuestProgressPercentage"
+              style="transition: width 0.5s ease-in-out"
+            ></div>
+            <div class="relative flex items-center justify-between">
+              <h4
+                class="font-poppins text-sm font-medium transition-colors duration-500"
+                [ngClass]="stepsQuestProgressPercentage >= 100 ? 'text-night' : 'text-gray-900'"
+              >
+                10 000 kroków
+              </h4>
+              <span
+                class="font-poppins text-xs font-medium transition-colors duration-500"
+                [ngClass]="stepsQuestProgressPercentage >= 100 ? 'text-night' : 'text-gray-500'"
+                >+20 XP</span
+              >
+            </div>
+          </div>
+
+          <!-- Quest 3 - In progress (screen breaks) -->
+          <div class="bg-gray-100 rounded-xl p-3 relative overflow-hidden">
+            <div
+              class="absolute inset-0 bg-lime rounded-xl transition-all duration-500"
+              [style.width.%]="screenBreaksQuestProgressPercentage"
+            ></div>
+            <div class="relative flex items-center justify-between">
+              <h4 class="font-poppins text-sm font-medium text-gray-900">5 przerw od ekranu</h4>
+              <span class="font-poppins text-xs text-gray-600 font-medium">+15 XP</span>
+            </div>
+          </div>
+
+          <!-- Quest 4 - Meditation (Dynamic) -->
+          <div
+            class="rounded-xl p-3 relative overflow-hidden transition-colors duration-500"
+            [ngClass]="meditationQuestProgressPercentage >= 100 ? 'bg-lime' : 'bg-gray-100'"
+          >
+            <div
+              class="absolute inset-0 bg-lime rounded-xl"
+              [style.width.%]="meditationQuestProgressPercentage"
+              style="transition: width 0.5s ease-in-out"
+            ></div>
+            <div class="relative flex items-center justify-between">
+              <h4
+                class="font-poppins text-sm font-medium transition-colors duration-500"
+                [ngClass]="
+                  meditationQuestProgressPercentage >= 100 ? 'text-night' : 'text-gray-900'
+                "
+              >
+                15 min medytacji
+              </h4>
+              <span
+                class="font-poppins text-xs font-medium transition-colors duration-500"
+                [ngClass]="
+                  meditationQuestProgressPercentage >= 100 ? 'text-night' : 'text-gray-500'
+                "
+                >+30 XP</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievements Section -->
+      <div class="flex flex-col mt-12">
+        <div class="flex items-center mb-6">
+          <h2 class="font-fredoka text-2xl text-night">Odznaki</h2>
+          <button class="p-2 hover:bg-gray-100 rounded-full ml-1 transition-colors cursor-pointer">
+            <mat-icon
+              class="text-gray-600 hover:text-night transition-colors"
+              style="font-size: 24px"
+              >arrow_forward</mat-icon
+            >
+          </button>
+        </div>
+
+        <!-- Badges Grid - 2 rows x 4 columns -->
+        <div class="grid grid-cols-4 gap-4">
+          <!-- Dynamic Badges -->
+          <div
+            *ngFor="let badge of userData.badges()"
+            class="flex flex-col items-center cursor-pointer hover:scale-105 transition-transform"
+            (click)="openBadgeInfo(badge)"
+          >
+            <div
+              class="w-20 h-20 rounded-full flex items-center justify-center shadow-lg mb-2"
+              [style.background]="badge.shieldColor"
+            >
+              <mat-icon class="badge-icon" [style.color]="getBadgeIconColor(badge.shieldColor)">{{
+                badge.icon
+              }}</mat-icon>
+            </div>
+            <span class="font-poppins text-xs text-gray-700 text-center">{{ badge.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Universal Popup -->
+<app-popup
+  [isOpen]="popupService.isOpen()"
+  [title]="popupService.currentPopup()?.title || ''"
+  (close)="popupService.closePopup()"
+>
+  <app-popup-content
+    [type]="popupService.currentPopup()?.type || null"
+    [data]="popupService.currentPopup()?.data || {}"
+    (action)="onPopupAction($event)"
+  ></app-popup-content>
+</app-popup>

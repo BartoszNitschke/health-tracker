@@ -1,0 +1,56 @@
+<!-- Sidebar Navbar -->
+<div class="h-full w-24 flex flex-col items-center pt-6 bg-night-2 rounded-3xl">
+  <!-- Logo -->
+  <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-8">
+    <img src="/leaf-logo-circle.png" alt="Health Tracker Logo" class="w-20 h-20 object-contain" />
+  </div>
+
+  <!-- Navigation Icons -->
+  <nav class="flex flex-col space-y-6 flex-1 mt-16">
+    <!-- Home - Active -->
+    <div
+      class="w-14 h-14 rounded-full flex items-center justify-center cursor-pointer bg-lime icon-lg"
+    >
+      <mat-icon class="text-night">home</mat-icon>
+    </div>
+
+    <!-- Stats -->
+    <div
+      class="w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity icon-lg"
+    >
+      <mat-icon style="color: var(--color-gray-400)">bar_chart</mat-icon>
+    </div>
+
+    <!-- Trends -->
+    <div
+      class="w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity icon-lg"
+    >
+      <mat-icon style="color: var(--color-gray-400)">trending_up</mat-icon>
+    </div>
+
+    <!-- Calendar -->
+    <div
+      class="w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity icon-lg"
+    >
+      <mat-icon style="color: var(--color-gray-400)">calendar_today</mat-icon>
+    </div>
+  </nav>
+
+  <!-- User Avatar with Level Badge -->
+  <div class="flex flex-col items-center mt-6 mb-4">
+    <div class="relative">
+      <img
+        [src]="userAvatar"
+        [alt]="userName"
+        class="w-14 h-14 rounded-full border-2 border-lime object-cover cursor-pointer hover:opacity-90 transition-opacity"
+      />
+    </div>
+  </div>
+
+  <!-- Settings - Bottom -->
+  <div
+    class="w-14 h-14 flex items-center justify-center cursor-pointer hover:opacity-80 rounded-xl transition-opacity icon-lg"
+  >
+    <mat-icon style="color: var(--color-gray-600)">settings</mat-icon>
+  </div>
+</div>

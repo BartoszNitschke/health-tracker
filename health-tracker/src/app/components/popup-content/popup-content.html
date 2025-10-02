@@ -1,0 +1,398 @@
+<!-- Water/Calories/Steps/Breaks Increment -->
+<div *ngIf="type && type.includes('increment')" class="space-y-6">
+  <div class="text-center">
+    <p class="text-gray-600 mb-4">
+      Obecnie: <span class="font-bold text-night">{{ data.current }}/{{ data.goal }}</span>
+      {{ getIncrementUnit() }}
+    </p>
+
+    <!-- Quick increment buttons -->
+    <div class="grid grid-cols-3 gap-3 mb-6">
+      <button
+        *ngFor="let option of getIncrementOptions()"
+        (click)="incrementValue = option"
+        [class.bg-lime]="incrementValue === option"
+        [class.text-night]="incrementValue === option"
+        [class.bg-gray-100]="incrementValue !== option"
+        [class.text-gray-700]="incrementValue !== option"
+        class="py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors duration-200"
+      >
+        +{{ option }}
+      </button>
+    </div>
+
+    <!-- Custom input -->
+    <div class="mb-6">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Inna ilość:</label>
+      <input
+        type="number"
+        [(ngModel)]="incrementValue"
+        min="1"
+        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-lime focus:border-transparent"
+        placeholder="Wpisz liczbę"
+      />
+    </div>
+
+    <!-- Submit button -->
+    <button
+      (click)="onIncrement()"
+      class="w-full bg-lime text-night py-4 rounded-xl font-semibold hover-lime-dark transition-colors duration-200 flex items-center justify-center gap-2"
+    >
+      <mat-icon>add</mat-icon>
+      Dodaj {{ incrementValue }} {{ getIncrementUnit() }}
+    </button>
+  </div>
+</div>
+
+<!-- Exercise Setup -->
+<div *ngIf="type === 'exercise-setup'" class="space-y-6">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Typ treningu:</label>
+    <select
+      [(ngModel)]="exerciseType"
+      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-lime focus:border-transparent"
+    >
+      <option value="">Wybierz typ</option>
+      <option value="cardio">Cardio</option>
+      <option value="strength">Siłowy</option>
+      <option value="yoga">Yoga</option>
+      <option value="running">Bieganie</option>
+      <option value="cycling">Rower</option>
+      <option value="swimming">Pływanie</option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Czas trwania (minuty):</label>
+    <div class="grid grid-cols-4 gap-2 mb-3">
+      <button
+        *ngFor="let duration of [15, 30, 45, 60]"
+        (click)="exerciseDuration = duration"
+        [class.bg-lime]="exerciseDuration === duration"
+        [class.text-night]="exerciseDuration === duration"
+        [class.bg-gray-100]="exerciseDuration !== duration"
+        class="py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
+      >
+        {{ duration }}min
+      </button>
+    </div>
+    <input
+      type="number"
+      [(ngModel)]="exerciseDuration"
+      min="1"
+      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-lime focus:border-transparent"
+    />
+  </div>
+
+  <button
+    (click)="onExerciseSubmit()"
+    [disabled]="!exerciseType"
+    class="w-full bg-lime text-night py-4 rounded-xl font-semibold hover-lime-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    Rozpocznij trening
+  </button>
+</div>
+
+<!-- Meditation Setup -->
+<div *ngIf="type === 'meditation-setup'" class="space-y-6">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Typ medytacji:</label>
+    <select
+      [(ngModel)]="meditationType"
+      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-lime focus:border-transparent"
+    >
+      <option value="mindfulness">Mindfulness</option>
+      <option value="breathing">Oddechowa</option>
+      <option value="body-scan">Body Scan</option>
+      <option value="loving-kindness">Loving Kindness</option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Czas trwania (minuty):</label>
+    <div class="grid grid-cols-4 gap-2 mb-3">
+      <button
+        *ngFor="let duration of [5, 10, 15, 20]"
+        (click)="meditationDuration = duration"
+        [class.bg-lime]="meditationDuration === duration"
+        [class.text-night]="meditationDuration === duration"
+        [class.bg-gray-100]="meditationDuration !== duration"
+        class="py-2 rounded-lg font-medium hover-gray-dark transition-colors duration-200"
+      >
+        {{ duration }}min
+      </button>
+    </div>
+  </div>
+
+  <button
+    (click)="onMeditationSubmit()"
+    class="w-full bg-lime text-night py-4 rounded-xl font-semibold hover-lime-dark transition-colors duration-200"
+  >
+    Rozpocznij medytację
+  </button>
+</div>
+
+<!-- Eating Log -->
+<div *ngIf="type === 'eating-log'" class="space-y-6">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Rodzaj posiłku:</label>
+    <select
+      [(ngModel)]="mealType"
+      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-lime focus:border-transparent"
+    >
+      <option value="breakfast">Śniadanie</option>
+      <option value="lunch">Obiad</option>
+      <option value="dinner">Kolacja</option>
+      <option value="snack">Przekąska</option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Kalorie:</label>
+    <div class="grid grid-cols-4 gap-2 mb-3">
+      <button
+        *ngFor="let cal of [100, 300, 500, 800]"
+        (click)="calories = cal"
+        [class.bg-lime]="calories === cal"
+        [class.text-night]="calories === cal"
+        [class.bg-gray-100]="calories !== cal"
+        class="py-2 rounded-lg font-medium hover-gray-dark transition-colors duration-200"
+      >
+        {{ cal }}
+      </button>
+    </div>
+    <input
+      type="number"
+      [(ngModel)]="calories"
+      min="0"
+      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-lime focus:border-transparent"
+      placeholder="Wpisz kalorie"
+    />
+  </div>
+
+  <button
+    (click)="onEatingSubmit()"
+    [disabled]="calories <= 0"
+    class="w-full bg-lime text-night py-4 rounded-xl font-semibold hover-lime-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    Dodaj posiłek
+  </button>
+</div>
+
+<!-- Sleep Log -->
+<div *ngIf="type === 'sleep-log'" class="space-y-6">
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-3">Typ snu:</label>
+    <div class="grid grid-cols-2 gap-3">
+      <button
+        (click)="sleepType = 'sleep'"
+        [class.bg-lime]="sleepType === 'sleep'"
+        [class.text-night]="sleepType === 'sleep'"
+        [class.bg-gray-100]="sleepType !== 'sleep'"
+        [class.text-gray-700]="sleepType !== 'sleep'"
+        class="py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors duration-200"
+      >
+        🌙 Sen nocny
+      </button>
+      <button
+        (click)="sleepType = 'nap'"
+        [class.bg-lime]="sleepType === 'nap'"
+        [class.text-night]="sleepType === 'nap'"
+        [class.bg-gray-100]="sleepType !== 'nap'"
+        [class.text-gray-700]="sleepType !== 'nap'"
+        class="py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition-colors duration-200"
+      >
+        ☀️ Drzemka
+      </button>
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-3">Czas snu (godziny):</label>
+    <div class="grid grid-cols-4 gap-2 mb-4">
+      <button
+        *ngFor="let hours of [0.5, 1, 2, 4, 6, 7, 8, 9]"
+        (click)="sleepHours = hours"
+        [class.bg-lime]="sleepHours === hours"
+        [class.text-night]="sleepHours === hours"
+        [class.bg-gray-100]="sleepHours !== hours"
+        [class.text-gray-700]="sleepHours !== hours"
+        class="py-2 px-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-200"
+      >
+        {{ hours }}h
+      </button>
+    </div>
+
+    <input
+      type="number"
+      [(ngModel)]="sleepHours"
+      min="0.1"
+      max="12"
+      step="0.5"
+      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-lime focus:border-transparent"
+      placeholder="Wpisz liczbę godzin"
+    />
+  </div>
+
+  <div class="text-center text-sm text-gray-600">
+    <p *ngIf="sleepType === 'sleep'">8 godzin snu = 100% energii</p>
+    <p *ngIf="sleepType === 'nap'">
+      Drzemka: {{ sleepHours }}h = +{{ Math.round((sleepHours / 8) * 100) }}% energii
+    </p>
+  </div>
+
+  <button
+    (click)="onSleepSubmit()"
+    [disabled]="sleepHours <= 0"
+    class="w-full bg-lime text-night py-4 rounded-xl font-semibold hover-lime-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {{ sleepType === 'sleep' ? 'Zapisz sen' : 'Zapisz drzemkę' }}
+  </button>
+</div>
+
+<!-- Badge Info -->
+<div *ngIf="type === 'badge-info'" class="space-y-6 text-center">
+  <div
+    class="w-28 h-28 mx-auto rounded-2xl flex items-center justify-center shadow-lg"
+    [style.background]="data.shieldColor"
+  >
+    <mat-icon class="text-5xl" [style.color]="getBadgeIconColorForPopup(data.shieldColor)">{{
+      data.icon
+    }}</mat-icon>
+  </div>
+
+  <div class="space-y-3">
+    <h3 class="font-poppins font-bold text-2xl text-night">{{ data.name }}</h3>
+    <p class="font-poppins text-gray-600 text-lg leading-relaxed">{{ data.description }}</p>
+    <div class="bg-gray-50 rounded-xl p-3">
+      <p class="font-poppins text-sm text-gray-500">
+        <span class="font-medium">Data zdobycia:</span> {{ getBadgeAcquiredDate(data.id) }}
+      </p>
+    </div>
+  </div>
+
+  <button
+    (click)="onClose()"
+    class="w-full bg-lime text-night py-4 rounded-xl font-poppins font-semibold hover-lime-dark transition-colors duration-200"
+  >
+    Zamknij
+  </button>
+</div>
+
+<!-- Activity Results -->
+<div *ngIf="type === 'activity-results'" class="space-y-6 text-center">
+  <div>
+    <h3 class="font-bold text-xl text-night mb-2 font-poppins">
+      {{ data.activityType }} ukończony!
+    </h3>
+    <p class="text-gray-600">Czas trwania: {{ data.duration }} minut</p>
+  </div>
+
+  <!-- Gains -->
+  <div *ngIf="data.gains && data.gains.length > 0" class="bg-green-50 rounded-xl p-4">
+    <h4
+      class="font-semibold text-green-800 mb-3 flex items-center justify-center gap-2 font-poppins"
+    >
+      <mat-icon class="text-green-600">trending_up</mat-icon>
+      Zyskane atrybuty
+    </h4>
+    <div class="space-y-2">
+      <div
+        *ngFor="let gain of data.gains"
+        class="flex items-center justify-center gap-2 text-green-700"
+      >
+        <span class="text-2xl">{{ gain.emoji }}</span>
+        <span class="font-medium">{{ gain.name }}</span>
+        <span class="font-bold text-green-800">{{ gain.value }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Losses -->
+  <div *ngIf="data.losses && data.losses.length > 0" class="bg-red-50 rounded-xl p-4">
+    <h4 class="font-semibold text-red-800 mb-3 flex items-center justify-center gap-2 font-poppins">
+      <mat-icon class="text-red-600">trending_down</mat-icon>
+      Utracone atrybuty
+    </h4>
+    <div class="space-y-2">
+      <div
+        *ngFor="let loss of data.losses"
+        class="flex items-center justify-center gap-2 text-red-700"
+      >
+        <span class="text-2xl">{{ loss.emoji }}</span>
+        <span class="font-medium">{{ loss.name }}</span>
+        <span class="font-bold text-red-800">{{ loss.value }}</span>
+      </div>
+    </div>
+  </div>
+
+  <button
+    (click)="onClose()"
+    class="w-full bg-lime text-night py-4 rounded-xl font-semibold hover-lime-dark transition-colors duration-200"
+  >
+    Zamknij
+  </button>
+</div>
+
+<!-- Customize Targets -->
+<div *ngIf="type === 'customize-targets'" class="space-y-6">
+  <div class="flex gap-6 min-h-[400px]">
+    <!-- Left Side - Drop Zones (2x2 grid) -->
+    <div class="flex-1">
+      <h4 class="font-poppins font-semibold text-lg text-night mb-4">Twoje dzienne cele (max 4)</h4>
+      <div class="grid grid-cols-2 gap-4">
+        <div
+          *ngFor="let slot of dropSlots; let i = index"
+          class="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center transition-colors duration-200"
+          [class.border-lime]="slot.item"
+          [class.bg-lime-50]="slot.item"
+          [class.bg-gray-50]="!slot.item"
+          (drop)="onDrop($event, i)"
+          (dragover)="onDragOver($event)"
+        >
+          <div
+            *ngIf="slot.item"
+            class="text-center cursor-move p-4 w-full"
+            draggable="true"
+            (dragstart)="onDragStartFromSlot($event, slot.item, i)"
+          >
+            <div class="text-6xl mb-4">{{ slot.item.emoji }}</div>
+            <div class="font-poppins font-medium text-3xl text-night">{{ slot.item.name }}</div>
+          </div>
+          <div *ngIf="!slot.item" class="text-center text-gray-400">
+            <div class="text-4xl font-bold mb-2">{{ i + 1 }}</div>
+            <div class="font-poppins text-sm">Przeciągnij tutaj</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Available Items -->
+    <div class="w-80">
+      <h4 class="font-poppins font-semibold text-lg text-night mb-4">Dostępne cele</h4>
+      <div
+        class="grid grid-cols-2 gap-4"
+        (drop)="onDropToAvailable($event)"
+        (dragover)="onDragOver($event)"
+      >
+        <div
+          *ngFor="let item of availableItems"
+          class="aspect-square bg-white border border-gray-200 rounded-xl p-4 cursor-move hover:shadow-md transition-shadow duration-200 flex flex-col items-center justify-center text-center"
+          draggable="true"
+          (dragstart)="onDragStart($event, item)"
+        >
+          <div class="text-5xl mb-4">{{ item.emoji }}</div>
+          <div class="font-poppins font-medium text-sm text-night">{{ item.name }}</div>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <button
+        (click)="saveCustomTargets()"
+        class="w-full mt-6 bg-lime text-night py-3 rounded-xl font-poppins font-semibold hover-lime-dark transition-colors duration-200"
+      >
+        Zapisz
+      </button>
+    </div>
+  </div>
+</div>

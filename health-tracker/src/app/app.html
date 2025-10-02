@@ -1,0 +1,17 @@
+<!-- Loading Screen -->
+@if (isLoading()) {
+  <div class="loading-screen">
+    <div class="loading-spinner"></div>
+  </div>
+}
+
+<!-- Main App Content -->
+@if (!isLoading()) {
+  <div class="flex h-screen bg-isabelline p-4">
+    <app-sidebar></app-sidebar>
+
+    <main class="flex-1">
+      <router-outlet />
+    </main>
+  </div>
+}

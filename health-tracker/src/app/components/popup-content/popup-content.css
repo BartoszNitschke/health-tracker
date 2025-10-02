@@ -1,0 +1,102 @@
+/* Popup content styling */
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+/* Custom input styling */
+input,
+select {
+  cursor: text;
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(202, 245, 71, 0.1);
+  cursor: text;
+}
+
+select {
+  cursor: pointer;
+}
+
+/* Button styling */
+button {
+  cursor: pointer;
+}
+
+/* Custom hover effects */
+.hover-lime-dark:hover:not(:disabled) {
+  background-color: #a7ca39 !important;
+}
+
+.hover-gray-dark:hover:not(:disabled) {
+  background-color: rgba(156, 163, 175, 1) !important;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Grid layouts */
+.grid {
+  display: grid;
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+/* Badge gradient */
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+
+.from-yellow-400 {
+  --tw-gradient-from: #fbbf24;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(251, 191, 36, 0));
+}
+
+.to-orange-500 {
+  --tw-gradient-to: #f97316;
+}
+
+/* Drag & Drop Visual Feedback */
+.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+  transition: all 0.2s ease-in-out;
+}
+
+.drag-over {
+  border-color: #caf547 !important;
+  background-color: rgba(202, 245, 71, 0.1) !important;
+  transform: scale(1.02);
+  transition: all 0.2s ease-in-out;
+}
+
+.drop-slot {
+  transition: all 0.2s ease-in-out;
+}
+
+.drop-slot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
